@@ -1,0 +1,306 @@
+/* ================================================================
+   1. 主题与字体
+   修改这组变量即可换色；英文用 Windows 时代常见字体及 mono 后备。
+   CEF 字体仅给中文照片配文，避免把英文字母也换成手写字形。
+   ================================================================ */
+@font-face {
+  font-family: 'CEF CJK';
+  src: url('assets/fonts/CEFFontsCJK-Regular.ttf') format('truetype');
+  font-display: swap;
+  /* 只接管中文、CJK 标点与全角字符；配文里的英文仍用系统英文字体。 */
+  unicode-range: U+2E80-9FFF, U+F900-FAFF, U+FF00-FFEF, U+20000-3134F;
+}
+:root {
+  --ink: #263947;
+  --silver: #e4e7e7;
+  --blue: #2b6896;
+  --pink: #eed1e6;
+  --aqua: #bceadd;
+  --frame: #7794ad;
+  --open-time: 850ms;
+  --spring: cubic-bezier(.22,.7,.25,1);
+  font-family: Tahoma, 'Segoe UI', 'Lucida Grande', 'Courier New', monospace;
+  color: var(--ink);
+  font-size: 13px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; min-height: 100%; }
+body { background: #a8d5ed; }
+button, input, output { font: inherit; }
+button { cursor: pointer; color: inherit; touch-action: manipulation; }
+button:disabled { cursor: default; color: #677381; }
+button:focus-visible, input:focus-visible { outline: 2px dotted #254269; outline-offset: 3px; }
+[hidden] { display: none !important; }
+p { margin: 0; }
+
+/* ================================================================
+   2. Y2K 壁纸：网纹、蓝绿光晕、玻璃泡泡。所有装饰均不接收鼠标事件。
+   ================================================================ */
+.wallpaper {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, #ffffff10 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, #2c87b207 0 1px, transparent 1px 4px),
+    radial-gradient(ellipse at 10% 85%, #d4f2c0 0, transparent 45%),
+    radial-gradient(ellipse at 85% 14%, #dceefc 0, transparent 38%),
+    radial-gradient(ellipse at 75% 90%, #d2cbf3 0, transparent 46%),
+    linear-gradient(125deg, #6fc6de, #a2dbe2 50%, #9dc9ed);
+}
+.wallpaper:before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 25% 45%, transparent 46%, #fff5 47%, transparent 48%); transform: rotate(-22deg) scale(1.6); }
+.wallpaper i { position: absolute; border: 1px solid #fff7; border-radius: 50%; box-shadow: inset 8px 10px 22px #ffffffe0, inset -5px -8px 24px #357e9f35, 0 0 12px #ffffff30; background: radial-gradient(ellipse at 33% 23%, #fff9, #ffffff10 26%, #dcdbef24 60%); }
+.wallpaper i:nth-child(1) { width: 280px; height: 280px; top: 5%; left: -80px; }
+.wallpaper i:nth-child(2) { width: 190px; height: 190px; bottom: 8%; right: 3%; }
+.wallpaper i:nth-child(3) { width: 95px; height: 95px; top: 10%; right: 13%; }
+.wallpaper i:nth-child(4) { width: 55px; height: 55px; bottom: 20%; left: 14%; }
+.wallpaper i:nth-child(5) { width: 380px; height: 380px; bottom: -210px; left: 25%; }
+.wallpaper b { position: absolute; color: #fff; font-size: 48px; font-weight: 400; text-shadow: 0 0 4px #b5a3ea; }
+.wallpaper b:nth-of-type(1) { left: 8%; top: 35%; }
+.wallpaper b:nth-of-type(2) { right: 7%; top: 62%; font-size: 30px; }
+.wallpaper b:nth-of-type(3) { left: 72%; top: 9%; font-size: 26px; }
+
+/* ================================================================
+   3. 老式窗口控件：亮上边 + 暗下边形成凸起，按下时反转。
+   这些是真实可操作按钮，不是静态截图里的装饰。
+   ================================================================ */
+.window { border: 1px solid #587799; padding: 3px; background: #dce6ed; box-shadow: inset 1px 1px #fff, inset -1px -1px #7e8c9d, 5px 7px 0 #42617a2e, 0 15px 36px #39718724; border-radius: 7px 7px 2px 2px; }
+.titlebar { min-height: 34px; padding: 4px 5px 4px 9px; display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #fff; text-shadow: 0 1px 1px #284e77; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, #9fc8e8 0%, #619bc7 46%, #4985b3 49%, #8ab8d3 100%); border: 1px solid #5b96bf; box-shadow: inset 0 1px #effaff; font-size: 13px; }
+.titlebar > span { display: flex; align-items: center; gap: 7px; }
+.window-controls { display: flex; gap: 3px; }
+.window-controls button, .window-close { width: 26px; height: 25px; border: 1px solid #72899c; background: linear-gradient(#edf5fa, #a6bfd4); color: #314c6c; box-shadow: inset 1px 1px #fff; line-height: 1; font-size: 18px; text-shadow: none; padding: 0; }
+.window-controls button:last-child, .window-close { background: linear-gradient(#f5e0e9, #ca96b1); }
+.mini-orb { display: inline-block; width: 15px; height: 15px; border-radius: 50%; background: radial-gradient(circle at 32% 27%, #fff 0 10%, #b9f4e9 22%, #7e9ecb 65%, #7b74a6); box-shadow: 0 0 0 1px #fff8; }
+.classic { min-height: 32px; padding: 5px 13px; border: 1px solid #768da1; background: linear-gradient(#fff 0%, #e8eef3 47%, #cddce6 50%, #dbe5e7 100%); box-shadow: inset 1px 1px #fff, inset -1px -1px #a6b0b8, 1px 1px #fff7; border-radius: 2px; white-space: nowrap; }
+.classic:hover:not(:disabled) { background: linear-gradient(#fff, #d5edf2 46%, #afdbdf 49%, #def1e8); border-color: #5087a8; }
+.classic:active:not(:disabled) { box-shadow: inset 1px 1px #7f90a0, inset -1px -1px #fff; transform: translateY(1px); }
+.classic.accent { background: linear-gradient(#fff5fc, #f5dfec 45%, #e5b7d2 50%, #f3d6e7); min-width: 110px; }
+.toolbar { display: flex; align-items: center; gap: 9px; padding: 9px 10px; background: linear-gradient(#f8faff, #d8e3eb); border-bottom: 1px solid #8fa7b7; }
+.toolbar-divider, .taskbar-divider { height: 25px; width: 2px; border-left: 1px solid #9eafb9; border-right: 1px solid #fff; margin: 0 3px; }
+.toolbar output { background: #f7fcfd; border: 1px solid #8da2b4; box-shadow: inset 1px 1px #bfcad0; padding: 6px 9px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #3c5161; }
+.address-label { color: #566875; font-size: 12px; }
+.statusbar { display: flex; min-height: 25px; background: #e3e9e9; border-top: 1px solid #faffff; align-items: center; font-size: 11px; }
+.statusbar span { border-right: 1px solid #aebac1; padding: 3px 10px; }
+.statusbar span:first-child { flex: 1; }
+.statusbar .resize-grip { font-size: 20px; padding: 0 4px; line-height: 1; color: #8a9ca9; }
+
+/* 密码窗口没有标题或生日提示。即使出错，也只用英文提示密码不匹配。 */
+#gate { min-height: 100svh; display: grid; place-items: center; padding: 20px; }
+.login-window { width: min(375px, 100%); }
+.login-titlebar { height: 29px; min-height: 29px; }
+.window-decoration { color: #e8f4fc; letter-spacing: 1px; font-size: 16px; }
+.login-body { padding: 39px 33px 24px; background: linear-gradient(135deg, #effaff, #eef6ee 54%, #f2e8f2); }
+#key-hint { display: block; font: 28px 'Courier New', monospace; color: #355872; margin-bottom: 26px; letter-spacing: -.04em; }
+.input-row { display: flex; gap: 8px; }
+#key { flex: 1; min-width: 0; width: 100%; height: 40px; border: 1px solid #73879d; box-shadow: inset 1px 1px #a9bac8; padding: 8px 10px; background: #fcfeff; font: 15px 'Courier New', monospace; }
+#key::placeholder { font-size: 12px; color: #687582; }
+.input-row button { width: 44px; font-size: 22px; }
+#key-error { color: #8f3455; font-size: 12px; margin-top: 10px; min-height: 30px; line-height: 1.5; }
+
+/* ================================================================
+   4. 桌面布局。主窗口通过 grid 布置，而非写死照片的坐标。
+   小屏规则在文件末尾，便于分别修改桌面与手机布局。
+   ================================================================ */
+#desktop { height: 100svh; min-height: 540px; padding: 4.5vh 5vw 70px 132px; }
+.desktop-icons { position: absolute; left: 18px; top: 33px; width: 90px; display: grid; gap: 25px; }
+.desktop-icon { border: 1px solid transparent; background: none; padding: 10px 2px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 12px; min-height: 88px; text-shadow: 1px 1px #e7fcff; }
+.desktop-icon:hover { border: 1px dotted #3d7199; background: #fff3; }
+.computer-icon { width: 43px; height: 34px; display: block; border: 5px ridge #d2e0e4; background: linear-gradient(140deg, #8dd7e4, #d2f6ef 45%, #91b2d2); position: relative; box-shadow: 3px 3px #426f8844; }
+.computer-icon:after { content: ''; position: absolute; bottom: -14px; left: 4px; width: 29px; height: 7px; background: #c0ccd3; border: 2px outset #dce5e8; }
+.envelope-icon { display: block; width: 44px; height: 33px; border: 1px solid #8b8c9c; background: linear-gradient(145deg, transparent 49%, #c2bbd7 50% 52%, transparent 53%), linear-gradient(215deg, #f8f5ff 49%, #b8afd1 50% 52%, #d5c5e7 53%); box-shadow: 2px 3px #54708933; }
+.collection-window { width: min(1140px, 100%); height: min(770px, calc(100svh - 115px)); min-height: 470px; margin: auto; display: grid; grid-template-rows: auto auto 1fr auto; }
+.collection-window.maximized { position: fixed; inset: 8px 8px 58px; width: auto; height: auto; margin: 0; z-index: 5; }
+.workspace { display: grid; grid-template-columns: 158px minmax(0, 1fr); min-height: 0; }
+.explorer { background: linear-gradient(155deg, #eef6ff, #d1e2ec 57%, #d9ede5); border-right: 1px solid #98afbf; padding: 13px 10px; display: flex; flex-direction: column; }
+.explorer-heading { padding: 6px 8px 13px; font-size: 12px; font-weight: bold; color: #41637a; border-bottom: 1px solid #acbfcd; }
+#box-tabs { display: flex; flex-direction: column; gap: 4px; padding-top: 15px; }
+.box-tab { padding: 9px 7px; border: 1px solid transparent; background: transparent; display: flex; gap: 8px; align-items: center; text-align: left; min-height: 39px; font-size: 12px; }
+.box-tab[aria-current='true'] { border: 1px dotted #6587a3; background: #effaffb0; }
+.folder-mini { width: 20px; height: 15px; background: linear-gradient(#fff3d6, #dec59a); border: 1px solid #a59b80; box-shadow: 1px 1px #fff8; position: relative; flex-shrink: 0; }
+.folder-mini:before { content: ''; position: absolute; left: -1px; top: -5px; width: 9px; height: 4px; border: 1px solid #a59b80; border-bottom: 0; background: #eee1bd; }
+.seen-mark { margin-left: auto; color: #466855; font-size: 11px; }
+.explorer-bottom { margin-top: auto; padding: 16px 5px 8px; font-size: 11px; color: #4d6674; }
+.progress-track { height: 9px; border: 1px inset #adc0c7; background: #f1f7f8; margin-top: 8px; padding: 1px; }
+#progress { display: block; width: 0; height: 100%; background: repeating-linear-gradient(90deg, #80afb7 0 8px, transparent 8px 10px); transition: width .25s; }
+#stage-pane { position: relative; min-height: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 48%, #ffffffb8, transparent 65%), repeating-linear-gradient(0deg, #b6d5dc17 0 1px, transparent 1px 4px), linear-gradient(125deg, #eef9f5, #e7f4f9 50%, #f5e8f1); }
+#ring-view { position: absolute; inset: 0; overflow: hidden; }
+.ring-track { position: absolute; width: 70%; height: 56%; left: 15%; top: 15%; border: 1px solid #82adbb4d; border-radius: 50%; transform: rotate(-7deg); box-shadow: 0 1px #fff; }
+#box-ring { position: absolute; inset: 0 0 84px; touch-action: pan-y; }
+.ring-object { position: absolute; left: 50%; top: 50%; width: 170px; padding: 0; border: 0; background: none; transition: left .65s var(--spring), top .65s var(--spring), transform .65s var(--spring), opacity .45s; transform-origin: center; }
+.ring-object:hover .vessel { filter: drop-shadow(0 7px 6px #3b61754a); }
+.ring-object:focus-visible { outline-offset: 10px; }
+.ring-object .object-label { display: inline-block; margin-top: 13px; padding: 4px 9px; background: #f9ffffb8; border: 1px solid #9cb4c6; font-size: 12px; box-shadow: 1px 1px #fff9; }
+.ring-controls { position: absolute; left: 0; right: 0; bottom: 35px; display: flex; justify-content: center; gap: 13px; z-index: 10; }
+.ring-controls .classic { min-height: 39px; }
+#selection-name { position: absolute; bottom: 10px; width: 100%; text-align: center; font-size: 11px; letter-spacing: .08em; }
+
+/* ================================================================
+   5. 真实开盖结构。
+   .surface 是模板原有盒内照片；.lid / .flap 是盖子。
+   照片在 closed 状态不可见，opened 时才显露。
+   不生成假回忆图片，也不裁切用户的原始照片文件。
+   ================================================================ */
+.vessel { width: 100%; aspect-ratio: .8; position: relative; display: block; perspective: 900px; transform-style: preserve-3d; filter: drop-shadow(3px 8px 6px #45617636); transition: filter .2s; }
+.surface { position: absolute; inset: 0; overflow: hidden; border-radius: 7px; background: #d5d1c6; border: 1px solid #858c8d; }
+.surface > img { width: 100%; height: 100%; display: block; object-fit: fill; }
+.inside-photos { position: absolute; inset: 8%; display: block; opacity: 0; transition: opacity .35s .15s; }
+.inside-photos img { position: absolute; width: 55%; height: 54%; object-fit: contain; background: #fffdf7; border: 5px solid #fffdf7; box-shadow: 2px 4px 5px #19292f33; }
+.inside-photos img:nth-child(1) { top: 3%; left: 0; transform: rotate(-8deg); }
+.inside-photos img:nth-child(2) { top: 33%; right: -1%; transform: rotate(8deg); }
+.inside-photos img:nth-child(3) { bottom: 0; left: 5%; width: 40%; height: 38%; transform: rotate(-3deg); }
+.lid { position: absolute; inset: 0; display: block; transform-origin: 50% 0; transition: transform var(--open-time) var(--spring), opacity var(--open-time); z-index: 4; transform-style: preserve-3d; }
+.opened .inside-photos { opacity: 1; }
+.lid-label { position: absolute; top: 45%; left: 50%; transform: translate(-50%,-50%) rotate(-5deg); border: 1px solid #899ba6; padding: 7px 12px; background: linear-gradient(#fffdfb, #dce6ec); box-shadow: 1px 2px 1px #26404d25; font: 13px 'Courier New', monospace; color: #40586c; }
+.fridge .vessel { aspect-ratio: .66; }
+.fridge .surface { border: 3px solid #b3a18b; border-radius: 17px; }
+.fridge .lid { border-radius: 18px; border: 3px solid #a69cb1; background: linear-gradient(96deg, #cbc6e3 0%, #eff2ff 12%, #d8d5eb 76%, #b7b2cf 96%); box-shadow: inset 3px 3px 5px #fff9, inset -3px -3px 6px #80779544; transform-origin: 0 50%; }
+.fridge .lid:before { content: ''; position: absolute; left: 8%; right: 8%; top: 30%; height: 3px; border-top: 1px solid #a7a0b9; border-bottom: 1px solid #fdfaff; }
+.fridge .lid:after { content: ''; position: absolute; right: 10%; top: 43%; width: 7%; height: 29%; border: 1px solid #9194a0; border-radius: 5px; background: linear-gradient(90deg, #a0a6b7, #fff, #aaa5b6); box-shadow: 3px 2px 3px #8c859866; }
+.fridge .lid-label { top: 18%; padding: 4px 8px; font-size: 10px; }
+.fridge.opened .lid { transform: rotateY(-114deg); }
+.basket .vessel { aspect-ratio: 1.03; }
+.basket .surface { border-radius: 12px 12px 26px 26px; background: #ecdfbf; border: 3px solid #bdaa75; }
+.basket .lid { border: 5px ridge #d4c398; border-radius: 13px; background: repeating-linear-gradient(0deg, transparent 0 8px, #a6905b55 8px 11px), repeating-linear-gradient(90deg, #eadfbe 0 8px, #b9a676 8px 11px); box-shadow: inset 0 0 15px #977e5055; }
+.basket .lid:before { content: ''; position: absolute; left: 24%; width: 52%; height: 24%; top: -21%; border: 6px ridge #c3ad7d; border-bottom: 0; border-radius: 50% 50% 0 0; }
+.basket.opened .lid { transform: translateY(-88%) rotateX(76deg) rotateZ(-7deg); opacity: .65; }
+.tin .vessel { aspect-ratio: 1.05; }
+.tin .surface { border: 6px ridge #b6bdbb; border-radius: 18px; background: linear-gradient(130deg, #a8b3b0, #dbe0db 50%, #969f9d); }
+.tin .surface > img { position: absolute; height: 210%; top: -110%; }
+.tin .lid { border: 7px ridge #c8cecf; border-radius: 18px; background: radial-gradient(ellipse at 30% 20%, #fff8, transparent 55%), repeating-linear-gradient(0deg, #fff1 0 1px, #a3b0b622 1px 3px), linear-gradient(125deg, #c4cfd5, #e1e8eb 35%, #aabcc7 70%, #dce1e4); box-shadow: inset 0 0 0 2px #84949c, inset 0 0 20px #97a6b2; }
+.tin .lid-label { border-color: #ba9aac; background: #ecd3e1; transform: translate(-50%,-50%) rotate(5deg); }
+.tin.opened .lid { transform: rotateX(125deg); }
+.cardboard .vessel { aspect-ratio: .88; }
+.cardboard .surface { background: #b88950; border: 4px solid #96764e; border-radius: 1px; }
+.cardboard .flap { position: absolute; z-index: 4; display: block; background: repeating-linear-gradient(0deg, #9d733e12 0 1px, transparent 1px 4px), linear-gradient(110deg, #cfa977, #e1bd87); border: 1px solid #a37b4b; transition: transform var(--open-time) var(--spring); box-shadow: inset 0 0 8px #9e753627; }
+.flap.left { left: 0; top: 0; width: 51%; height: 100%; transform-origin: left; }
+.flap.right { right: 0; top: 0; width: 51%; height: 100%; transform-origin: right; }
+.flap.top { top: 0; left: 0; width: 100%; height: 51%; transform-origin: top; z-index: 5; }
+.flap.bottom { bottom: 0; left: 0; width: 100%; height: 51%; transform-origin: bottom; z-index: 5; }
+.flap.top:after { content: ''; position: absolute; width: 23%; height: 100%; left: 39%; background: #ecd8ac88; border-left: 1px dashed #f9e8c1; border-right: 1px dashed #f9e8c1; }
+.cardboard.opened .flap.left { transform: rotateY(-120deg); }
+.cardboard.opened .flap.right { transform: rotateY(120deg); }
+.cardboard.opened .flap.top { transform: rotateX(120deg); }
+.cardboard.opened .flap.bottom { transform: rotateX(-120deg); }
+
+/* 开盖详情左边留下打开的实物，右边出现可点击照片。 */
+#open-view { height: 100%; display: grid; grid-template-columns: minmax(210px, 34%) minmax(0, 1fr); align-items: center; gap: 15px; padding: 24px 19px; overflow: auto; }
+#opening-object { padding: 40px 20px 40px 65px; align-self: start; position: sticky; top: 55px; min-width: 0; }
+#opening-object .memory-object { width: min(220px, 100%); display: block; margin: auto; }
+#photo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 14px; opacity: 0; transform: translateY(12px); transition: opacity .4s, transform .4s; padding: 8px 0; }
+#open-view.revealed #photo-grid { opacity: 1; transform: none; }
+.photo-tile { min-width: 0; padding: 7px 7px 10px; background: #fcfeff; border: 1px solid #aab8c4; box-shadow: 2px 3px 0 #9ab3c42e; text-align: left; }
+.photo-tile:hover { background: #f9f0fa; border-color: #b495b0; }
+.photo-tile img { display: block; width: 100%; height: 145px; object-fit: contain; background: #e8f1f3; }
+.photo-caption, .photo-tile figcaption { font-family: 'CEF CJK', Tahoma, sans-serif; font-size: 18px; line-height: 1.45; color: #304653; }
+.photo-tile figure { margin: 0; }
+.photo-tile figcaption { padding-top: 9px; }
+.flip-badge { font: 10px Tahoma, sans-serif; padding-top: 5px; display: block; color: #665274; }
+
+/* ================================================================
+   6. 照片查看器、翻转与手写信。
+   ================================================================ */
+dialog { color: var(--ink); width: min(780px, calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: 94svh; padding: 3px; margin: auto; }
+dialog::backdrop { background: #34577966; backdrop-filter: blur(3px); }
+.photo-toolbar { display: flex; gap: 9px; align-items: center; padding: 9px; background: #e1e9ee; }
+.photo-toolbar output { min-width: 42px; text-align: center; font-size: 11px; }
+#photo-zoom, #flip-button { margin-left: auto; }
+#photo-viewport { overflow: auto; max-height: 69svh; background: repeating-conic-gradient(#f0f4f7 0 25%, #e6ecef 0 50%) 0 0 / 16px 16px; padding: 15px; }
+#photo-image { display: block; max-height: 65svh; width: 100%; object-fit: contain; }
+#photo-viewport.zoomed #photo-image { width: 1400px; max-width: none; max-height: none; }
+#photo-caption { text-align: center; padding: 11px 15px; background: #f2f3f2; }
+#polaroid { position: relative; width: min(530px, 100%); height: min(55svh, 480px); margin: 4px auto 15px; border: 0; padding: 0; display: block; perspective: 1400px; background: transparent; }
+.flip-inner { display: block; height: 100%; width: 100%; transform-style: preserve-3d; transition: transform .75s var(--spring); }
+#polaroid.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-face { position: absolute; display: block; inset: 0; padding: 12px 12px 27px; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #fffef5; box-shadow: 2px 6px 12px #324b6b35; }
+.flip-face img { width: 100%; height: 100%; object-fit: contain; }
+.flip-face.back { transform: rotateY(180deg); }
+.letter-window { position: fixed; top: 4vh; bottom: 70px; left: 50%; transform: translateX(-50%); width: min(790px, calc(100% - 34px)); z-index: 8; display: grid; grid-template-rows: auto auto 1fr auto; }
+#letter-scroll { overflow: auto; background: #eef0eb; padding: 17px; }
+#letter-image { display: block; width: min(100%, 670px); height: auto; margin: auto; box-shadow: 2px 3px 8px #35465c20; }
+#letter-scroll.zoomed #letter-image { width: 1400px; max-width: none; }
+
+/* 信件的三段节奏：手写提示 → 信封出现 → 翻开封口、抽出原信。
+   实际文字仍是普通文本，clip-path 只负责视觉上的逐字显露。 */
+#letter-intro { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 65px; padding: 45px 12px 75px; }
+#letter-intro-text { font-family: 'CEF CJK', sans-serif; font-size: clamp(19px, 4.8vw, 30px); line-height: 1.7; color: #425771; white-space: nowrap; }
+.writing #letter-intro-text { animation: letter-writing 1.6s steps(12, end) both; }
+@keyframes letter-writing { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+#letter-envelope { position: relative; flex-shrink: 0; width: min(340px, 88%); aspect-ratio: 1.55; border: 1px solid #9baabc; border-radius: 3px; padding: 0; background: linear-gradient(135deg, #becbdf, #e4dae8); box-shadow: 2px 7px 15px #364f752b; perspective: 900px; animation: envelope-arrive .6s var(--spring) both; }
+#letter-envelope:disabled { cursor: default; }
+@keyframes envelope-arrive { from { opacity: 0; transform: translateY(22px) rotate(-3deg); } to { opacity: 1; transform: translateY(0) rotate(-3deg); } }
+.letter-envelope-paper { position: absolute; z-index: 2; inset: 8% 9% 4%; overflow: hidden; border: 1px solid #c0b9ab; background: #fffdf5; box-shadow: 0 1px 5px #40557125; opacity: 0; transition: opacity .2s .2s, transform .65s .4s var(--spring); }
+.letter-envelope-paper img { width: 100%; display: block; }
+.letter-envelope-pocket { position: absolute; z-index: 3; inset: 0; background: linear-gradient(32deg, #d8e2f0 49.5%, transparent 50%) left / 51% 100% no-repeat, linear-gradient(-32deg, #e8dfed 49.5%, transparent 50%) right / 51% 100% no-repeat; }
+.letter-envelope-pocket:after { content: ''; position: absolute; inset: 0; background: linear-gradient(#e6e5ef, #e9e8f3); clip-path: polygon(0 100%, 0 34%, 50% 72%, 100% 34%, 100% 100%); border-bottom: 1px solid #99a8bc; }
+.letter-envelope-flap { position: absolute; inset: 0; z-index: 4; clip-path: polygon(0 0, 100% 0, 50% 68%); background: linear-gradient(#eef3fb, #c7d4e5); transform-origin: 50% 0; transition: transform .65s var(--spring); }
+.letter-envelope-seal { position: absolute; z-index: 5; top: 51%; left: calc(50% - 22px); width: 44px; height: 44px; border: 3px ridge #cfa7c0; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 30% 25%, #f4e5ef, #bb8daa); color: #704660; font: italic 24px Georgia, serif; box-shadow: 1px 2px 3px #42556e30; transition: opacity .2s; }
+#letter-envelope.is-opening .letter-envelope-seal { opacity: 0; }
+#letter-envelope.is-opening .letter-envelope-flap { transform: rotateX(180deg); z-index: 1; }
+#letter-envelope.is-opening .letter-envelope-paper { opacity: 1; transform: translateY(-55%); }
+
+
+/* 右下角音乐控件始终可操作；锁定会停止播放。 */
+.taskbar { position: fixed; z-index: 20; bottom: 0; left: 0; right: 0; height: 47px; display: flex; align-items: center; gap: 8px; padding: 5px 7px; border-top: 2px solid #f8fdff; background: linear-gradient(#d5e5ef, #aec9df 45%, #b9cadd 48%, #c5d2df); box-shadow: 0 -1px #849cad; }
+#start { font-weight: bold; min-height: 35px; }
+.start-icon { font-size: 18px; color: #459179; margin-right: 4px; }
+.task-button { font-size: 12px; min-width: 170px; text-align: left; }
+.music-panel { margin-left: auto; min-height: 34px; display: flex; align-items: center; gap: 10px; padding: 2px 8px; border: 1px inset #bdcbd6; background: #d4e4ed66; font-size: 11px; }
+.music-icon { font-size: 18px; color: #516991; }
+#music-toggle { min-height: 28px; padding: 3px 10px; font-size: 11px; }
+#clock { font-family: 'Courier New', monospace; border-left: 1px solid #a4b6c5; padding-left: 10px; }
+#start-menu { position: fixed; bottom: 48px; left: 6px; z-index: 25; width: 180px; display: grid; gap: 5px; padding: 10px; }
+#start-menu button { text-align: left; }
+
+/* ================================================================
+   7. 手机布局与减少动画。44px 触摸目标，不以 hover 作为唯一入口。
+   ================================================================ */
+@media (max-width: 760px) {
+  #desktop { padding: 13px 10px 62px; min-height: 0; height: 100svh; }
+  .desktop-icons { display: none; }
+  .collection-window { height: calc(100svh - 79px); min-height: 0; }
+  .titlebar { min-height: 39px; font-size: 12px; }
+  .window-controls button, .window-close { width: 32px; height: 30px; }
+  .toolbar { gap: 7px; padding: 7px; }
+  .address-label, .toolbar-divider { display: none; }
+  .toolbar output { font-size: 10px; padding: 7px; }
+  .toolbar .classic { min-height: 36px; padding: 5px 8px; font-size: 11px; }
+  .workspace { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .explorer { padding: 4px 3px; border-right: 0; border-bottom: 1px solid #9eafbf; }
+  .explorer-heading, .explorer-bottom { display: none; }
+  #box-tabs { flex-direction: row; justify-content: space-around; padding: 0; gap: 0; }
+  .box-tab { flex: 1; justify-content: center; font-size: 10px; gap: 5px; padding: 7px 3px; min-height: 44px; }
+  .folder-mini { width: 14px; height: 12px; }
+  .seen-mark { margin-left: 0; font-size: 9px; }
+  .ring-object { width: 108px; }
+  .ring-object .object-label { font-size: 10px; margin-top: 9px; padding: 3px 6px; }
+  #box-ring { bottom: 83px; }
+  .ring-controls .classic { min-height: 44px; }
+  .ring-controls { bottom: 32px; gap: 17px; }
+  #selection-name { font-size: 11px; }
+  .lid-label { font-size: 10px; padding: 5px 8px; }
+  .fridge .lid-label { font-size: 8px; }
+  #open-view { display: block; padding: 17px 13px; }
+  #opening-object { position: relative; top: auto; width: 160px; padding: 27px 22px 40px; margin: 0 auto; }
+  #photo-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .photo-tile img { height: 156px; }
+  .photo-tile figcaption { font-size: 18px; }
+  .taskbar { gap: 4px; height: 49px; padding: 4px; }
+  .taskbar-divider, .music-icon, #clock { display: none; }
+  #start { padding: 6px 8px; min-height: 39px; font-size: 11px; }
+  .start-icon { margin-right: 0; }
+  .task-button { min-width: 0; padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; flex: 1; max-width: 150px; font-size: 10px; min-height: 39px; }
+  .music-panel { padding: 0 3px; gap: 4px; font-size: 10px; min-height: 40px; }
+  #music-toggle { min-height: 39px; padding: 4px 8px; font-size: 10px; min-width: 44px; }
+  .collection-window.maximized { inset: 0 0 50px; }
+  .letter-window { top: 10px; bottom: 61px; width: calc(100% - 20px); }
+  #letter-scroll { padding: 6px; }
+  .photo-toolbar { gap: 5px; padding: 6px; }
+  .photo-toolbar .classic { min-height: 40px; padding: 5px 9px; font-size: 11px; }
+  #photo-viewport { padding: 9px; }
+  .statusbar { font-size: 10px; }
+}
+@media (max-height: 690px) and (max-width: 760px) {
+  .ring-object { width: 87px; }
+  .ring-track { height: 53%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *:before, *:after { transition-duration: .01ms !important; animation: none !important; scroll-behavior: auto !important; }
+}
